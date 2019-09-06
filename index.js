@@ -1,22 +1,30 @@
-const mapByDate = {}
-_.times(12, (index) => {
-  mapByDate[dayjs().add(index, 'month').format('YYYY-MM')] = []
-})
-
-equipmentsData.forEach((equipment) => {
-  equipment.points.forEach((point) => {
-    const date = dayjs(point.lastChange).add(point.changeOilMonth, 'month').format('YYYY-MM')
-    if (mapByDate[date]) {
-      let oilType = mapByDate[date].find(item => item.oilType === point.oilType)
-      if (oilType) {
-        oilType = {...oilType, volume: oilType.volume + point.volume, date}
-      } else {
-        mapByDate[date].push({...point, date})
-      }
-    }
+const initMapByDate = () => {
+  const mapByDate = {}
+  _.times(12, (index) => {
+    mapByDate[dayjs().add(index, 'month').format('YYYY-MM')] = []
   })
-})
+  return mapByDate
+}
 
+const mapByDate = initMapByDate()
+
+const formatEquipmentData = () => {
+  equipmentsData.forEach((equipment) => {
+    equipment.points.forEach((point) => {
+      const date = dayjs(point.lastChange).add(point.changeOilMonth, 'month').format('YYYY-MM')
+      if (mapByDate[date]) {
+        let oilType = mapByDate[date].find(item => item.oilType === point.oilType)
+        if (oilType) {
+          oilType = {...oilType, volume: oilType.volume + point.volume, date}
+        } else {
+          mapByDate[date].push({...point, date})
+        }
+      }
+    })
+  })
+}
+
+formatEquipmentData()
 
 const chart = echarts.init(document.getElementById('main'))
 const dataByOilType = _.groupBy(_.flattenDeep(Object.values(mapByDate)), 'oilType')
