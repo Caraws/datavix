@@ -6,8 +6,6 @@ const initMapByDate = () => {
   return mapByDate
 }
 
-const mapByDate = initMapByDate()
-
 const formatEquipmentData = () => {
   equipmentsData.forEach((equipment) => {
     equipment.points.forEach((point) => {
@@ -23,6 +21,8 @@ const formatEquipmentData = () => {
     })
   })
 }
+
+const mapByDate = initMapByDate()
 
 formatEquipmentData()
 
